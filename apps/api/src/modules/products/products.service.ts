@@ -29,7 +29,7 @@ export class ProductsService {
     },
   ];
 
-  getProducts(query: ProductQueryDto): Product[] {
+  getProducts(query: ProductQueryDto, page: number = 1, limit: number = 10): Product[] {
     let filteredProducts = this.products;
 
     if (query.name) {
@@ -68,6 +68,41 @@ export class ProductsService {
       );
     }
 
-    return filteredProducts;
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    return filteredProducts.slice(startIndex, endIndex);
+  }
+
+  createProduct(product: Product): Product {
+    const newProduct = {
+      ...product,
+      id: (this.products.length + 1).toString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.products.push(newProduct);
+    return newProduct;
+  }
+
+  updateProduct(id: string, product: Product): Product {
+    const index = this.products.findIndex((p) => p.id === id);
+    if (index === -1) {
+      throw new Error('Product not found');
+    }
+    const updatedProduct = {
+      ...this.products[index],
+      ...product,
+      updatedAt: new Date(),
+    };
+    this.products[index] = updatedProduct;
+    return updatedProduct;
+  }
+
+  deleteProduct(id: string): void {
+    const index = this.products.findIndex((p) => p.id === id);
+    if (index === -1) {
+      throw new Error('Product not found');
+    }
+    this.products.splice(index, 1);
   }
 }
