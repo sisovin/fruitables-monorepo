@@ -33,4 +33,24 @@ export class OrdersService {
       where: { userId },
     });
   }
+
+  async submitOrder(order: Order): Promise<Order> {
+    const newOrder = await this.prisma.order.create({
+      data: {
+        ...order,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+    return newOrder;
+  }
+
+  async fetchOrderHistory(userId: string): Promise<Order[]> {
+    return this.prisma.order.findMany({
+      where: { userId },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
 }
