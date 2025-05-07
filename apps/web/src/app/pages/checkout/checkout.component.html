@@ -1,0 +1,44 @@
+<div class="checkout-page">
+  <h1>Checkout</h1>
+  <form>
+    <!-- Multi-step form for checkout process -->
+    <div class="step" *ngIf="currentStep === 1">
+      <h2>Step 1: Address</h2>
+      <!-- Address form with fields for shipping and billing address -->
+      <div class="address-form">
+        <label for="shipping-address">Shipping Address</label>
+        <input type="text" id="shipping-address" [(ngModel)]="shippingAddress" name="shippingAddress" required>
+        
+        <label for="billing-address">Billing Address</label>
+        <input type="text" id="billing-address" [(ngModel)]="billingAddress" name="billingAddress" required>
+      </div>
+      <button (click)="nextStep()">Next</button>
+    </div>
+
+    <div class="step" *ngIf="currentStep === 2">
+      <h2>Step 2: Payment</h2>
+      <!-- Payment options with credit card and PayPal -->
+      <div class="payment-options">
+        <label for="credit-card">Credit Card</label>
+        <input type="radio" id="credit-card" [(ngModel)]="paymentMethod" name="paymentMethod" value="creditCard" required>
+        
+        <label for="paypal">PayPal</label>
+        <input type="radio" id="paypal" [(ngModel)]="paymentMethod" name="paymentMethod" value="paypal" required>
+      </div>
+      <button (click)="previousStep()">Previous</button>
+      <button (click)="nextStep()">Next</button>
+    </div>
+
+    <div class="step" *ngIf="currentStep === 3">
+      <h2>Step 3: Review</h2>
+      <!-- Review order details -->
+      <div class="order-review">
+        <p>Shipping Address: {{ shippingAddress }}</p>
+        <p>Billing Address: {{ billingAddress }}</p>
+        <p>Payment Method: {{ paymentMethod }}</p>
+      </div>
+      <button (click)="previousStep()">Previous</button>
+      <button (click)="submitOrder()">Submit Order</button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,31 @@
+<div class="product-detail-page">
+  <div class="product-gallery">
+    <img *ngFor="let image of product.images" [src]="image" alt="Product Image">
+  </div>
+  <div class="product-info">
+    <h1>{{ product.name }}</h1>
+    <p>{{ product.description }}</p>
+    <div class="product-price">{{ product.price | currency }}</div>
+  </div>
+  <div class="product-reviews">
+    <h2>Reviews</h2>
+    <div *ngFor="let review of product.reviews" class="review">
+      <div class="review-rating">
+        <span *ngFor="let star of [1, 2, 3, 4, 5]" class="star" [class.filled]="star <= review.rating">★</span>
+      </div>
+      <p class="review-comment">{{ review.comment }}</p>
+    </div>
+    <div class="add-review">
+      <h3>Add a Review</h3>
+      <form (submit)="submitReview()">
+        <label for="rating">Rating</label>
+        <select id="rating" [(ngModel)]="newReview.rating">
+          <option *ngFor="let star of [1, 2, 3, 4, 5]" [value]="star">{{ star }}</option>
+        </select>
+        <label for="comment">Comment</label>
+        <textarea id="comment" [(ngModel)]="newReview.comment"></textarea>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
