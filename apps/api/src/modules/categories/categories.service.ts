@@ -1,38 +1,47 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@nestjs/prisma';
 
 @Injectable()
 export class CategoriesService {
-  private categories = [];
+  constructor(private readonly prisma: PrismaService) {}
 
-  createCategory(name: string, parentId?: string) {
-    const newCategory = {
-      id: (this.categories.length + 1).toString(),
-      name,
-      parentId: parentId || null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    this.categories.push(newCategory);
+  async createCategory(name: string, parentId?: string) {
+    const newCategory = await this.prisma.category.create({
+      data: {
+        name,
+        parentId: parentId || null,
+      },
+    });
     return newCategory;
   }
 
-  getCategoryTree() {
-    const buildTree = (parentId: string | null) => {
-      return this.categories
-        .filter((category) => category.parentId === parentId)
-        .map((category) => ({
+  async getCategoryTree() {
+    const buildTree = async (parentId: string | null) => {
+      const categories = await this.prisma.category.findMany({
+        where: { parentId },
+      });
+      return Promise.all(
+        categories.map(async (category) => ({
           ...category,
-          children: buildTree(category.id),
-        }));
+          children: await buildTree(category.id),
+        })),
+      );
     };
     return buildTree(null);
   }
 
-  getProductCounts() {
-    // Placeholder for actual implementation
-    return this.categories.map((category) => ({
-      ...category,
-      productCount: Math.floor(Math.random() * 100), // Random count for now
-    }));
+  async getProductCounts() {
+    const categories = await this.prisma.category.findMany();
+    return Promise.all(
+      categories.map(async (category) => {
+        const productCount = await this.prisma.product.count({
+          where: { categoryId: category.id },
+        });
+        return {
+          ...category,
+          productCount,
+        };
+      }),
+    );
   }
 }

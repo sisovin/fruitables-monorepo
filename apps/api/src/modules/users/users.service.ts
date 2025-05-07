@@ -1,45 +1,43 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@nestjs/prisma';
 import { User } from '@libs/shared-types/src/user.interface';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [];
+  constructor(private readonly prisma: PrismaService) {}
 
-  createUser(user: User): User {
-    const newUser = {
-      ...user,
-      id: (this.users.length + 1).toString(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    this.users.push(newUser);
+  async createUser(user: User): Promise<User> {
+    const newUser = await this.prisma.user.create({
+      data: {
+        ...user,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
     return newUser;
   }
 
-  updateUser(id: string, user: User): User {
-    const index = this.users.findIndex((u) => u.id === id);
-    if (index === -1) {
-      throw new Error('User not found');
-    }
-    const updatedUser = {
-      ...this.users[index],
-      ...user,
-      updatedAt: new Date(),
-    };
-    this.users[index] = updatedUser;
+  async updateUser(id: string, user: User): Promise<User> {
+    const updatedUser = await this.prisma.user.update({
+      where: { id },
+      data: {
+        ...user,
+        updatedAt: new Date(),
+      },
+    });
     return updatedUser;
   }
 
-  deleteUser(id: string): void {
-    const index = this.users.findIndex((u) => u.id === id);
-    if (index === -1) {
-      throw new Error('User not found');
-    }
-    this.users.splice(index, 1);
+  async deleteUser(id: string): Promise<void> {
+    await this.prisma.user.delete({
+      where: { id },
+    });
   }
 
-  getUserById(id: string): User {
-    const user = this.users.find((u) => u.id === id);
+  async getUserById(id: string): Promise<User> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
     if (!user) {
       throw new Error('User not found');
     }

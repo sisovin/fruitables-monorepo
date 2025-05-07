@@ -14,6 +14,7 @@ import { ResponseTransformInterceptor } from './interceptors/response-transform.
 import { RequestLoggingInterceptor } from './interceptors/request-logging.interceptor';
 import { ValidationPipe } from './pipes/validation.pipe';
 import { ParseIntPipe } from './pipes/parse-int.pipe';
+import { PrismaModule } from '@nestjs/prisma';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ParseIntPipe } from './pipes/parse-int.pipe';
       secret: 'your_jwt_secret_key',
       signOptions: { expiresIn: '60m' },
     }),
+    PrismaModule,
   ],
   providers: [
     AuthService,

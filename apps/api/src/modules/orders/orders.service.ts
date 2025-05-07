@@ -1,36 +1,36 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@nestjs/prisma';
 import { Order } from '@libs/shared-types/src/order.interface';
 
 @Injectable()
 export class OrdersService {
-  private orders: Order[] = [];
+  constructor(private readonly prisma: PrismaService) {}
 
-  createOrder(order: Order): Order {
-    const newOrder = {
-      ...order,
-      id: (this.orders.length + 1).toString(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    this.orders.push(newOrder);
+  async createOrder(order: Order): Promise<Order> {
+    const newOrder = await this.prisma.order.create({
+      data: {
+        ...order,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
     return newOrder;
   }
 
-  updateOrderStatus(id: string, status: string): Order {
-    const index = this.orders.findIndex((o) => o.id === id);
-    if (index === -1) {
-      throw new Error('Order not found');
-    }
-    const updatedOrder = {
-      ...this.orders[index],
-      status,
-      updatedAt: new Date(),
-    };
-    this.orders[index] = updatedOrder;
+  async updateOrderStatus(id: string, status: string): Promise<Order> {
+    const updatedOrder = await this.prisma.order.update({
+      where: { id },
+      data: {
+        status,
+        updatedAt: new Date(),
+      },
+    });
     return updatedOrder;
   }
 
-  getOrderHistory(userId: string): Order[] {
-    return this.orders.filter((order) => order.userId === userId);
+  async getOrderHistory(userId: string): Promise<Order[]> {
+    return this.prisma.order.findMany({
+      where: { userId },
+    });
   }
 }
