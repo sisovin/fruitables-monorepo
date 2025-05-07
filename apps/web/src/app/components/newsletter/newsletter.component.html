@@ -1,0 +1,9 @@
+<form (submit)="subscribeToNewsletter()">
+  <div>
+    <label for="email">Email:</label>
+    <input type="email" id="email" [(ngModel)]="email" name="email" required>
+  </div>
+  <div>
+    <button type="submit">Subscribe</button>
+  </div>
+</form>
