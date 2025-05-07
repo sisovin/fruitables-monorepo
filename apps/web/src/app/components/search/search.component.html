@@ -1,0 +1,10 @@
+<div class="search-container">
+  <input type="text" placeholder="Search products..." (input)="onSearch($event)" />
+  <div class="autocomplete" *ngIf="suggestions.length > 0">
+    <ul>
+      <li *ngFor="let suggestion of suggestions" (click)="selectSuggestion(suggestion)">
+        {{ suggestion }}
+      </li>
+    </ul>
+  </div>
+</div>
