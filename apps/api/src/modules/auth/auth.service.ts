@@ -36,4 +36,12 @@ export class AuthService {
     });
     return newUser;
   }
+
+  async logout(user: any) {
+    // Implement logout logic here
+  }
+
+  async storeToken(token: string) {
+    // Implement token storage logic here
+  }
 }

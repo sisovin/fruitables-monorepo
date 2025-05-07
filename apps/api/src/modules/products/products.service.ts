@@ -55,4 +55,23 @@ export class ProductsService {
       where: { id },
     });
   }
+
+  async filterProducts(query: ProductQueryDto): Promise<Product[]> {
+    const filteredProducts = await this.prisma.product.findMany({
+      where: {
+        name: query.name ? { contains: query.name, mode: 'insensitive' } : undefined,
+        category: query.category ? { equals: query.category } : undefined,
+        price: {
+          gte: query.minPrice !== undefined ? query.minPrice : undefined,
+          lte: query.maxPrice !== undefined ? query.maxPrice : undefined,
+        },
+        stock: {
+          gte: query.minStock !== undefined ? query.minStock : undefined,
+          lte: query.maxStock !== undefined ? query.maxStock : undefined,
+        },
+      },
+    });
+
+    return filteredProducts;
+  }
 }
