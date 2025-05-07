@@ -1,0 +1,9 @@
+nav {
+  transition: max-height 0.3s ease-out;
+  overflow: hidden;
+  max-height: 0;
+}
+
+nav.open {
+  max-height: 500px; /* Adjust based on the content height */
+}
