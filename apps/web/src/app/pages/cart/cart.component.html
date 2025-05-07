@@ -1,0 +1,32 @@
+<div class="cart-page">
+  <h1>Shopping Cart</h1>
+  <table class="cart-items-table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of cartItems">
+        <td>{{ item.name }}</td>
+        <td>{{ item.price | currency }}</td>
+        <td>
+          <button (click)="decreaseQuantity(item)">-</button>
+          <span>{{ item.quantity }}</span>
+          <button (click)="increaseQuantity(item)">+</button>
+        </td>
+        <td>{{ item.price * item.quantity | currency }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="cart-summary">
+    <h2>Summary</h2>
+    <p>Total Price: {{ cartTotal | currency }}</p>
+    <p>Discount: {{ discount | currency }}</p>
+    <p>Final Price: {{ finalPrice | currency }}</p>
+  </div>
+  <button class="checkout-button" (click)="navigateToCheckout()">Checkout</button>
+</div>

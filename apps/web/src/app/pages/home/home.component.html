@@ -1,0 +1,25 @@
+<div class="hero-banner" style="background-image: url('/assets/hero-banner.jpg');">
+  <div class="hero-text">
+    <h1>Welcome to Fruitables</h1>
+    <p>Your one-stop shop for fresh fruits and vegetables</p>
+  </div>
+</div>
+
+<div class="featured-products">
+  <h2>Featured Products</h2>
+  <div class="product-grid">
+    <app-product-card *ngFor="let product of featuredProducts" [product]="product"></app-product-card>
+  </div>
+</div>
+
+<div class="category-sections">
+  <h2>Shop by Category</h2>
+  <div class="category-grid">
+    <div class="category-card" *ngFor="let category of categories">
+      <a [routerLink]="['/shop', category.id]">
+        <img [src]="category.imageUrl" alt="{{ category.name }}">
+        <h3>{{ category.name }}</h3>
+      </a>
+    </div>
+  </div>
+</div>
