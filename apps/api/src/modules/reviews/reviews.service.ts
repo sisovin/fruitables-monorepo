@@ -1,25 +1,26 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@nestjs/prisma';
 import { Review } from '@libs/shared-types/src/review.interface';
 
 @Injectable()
 export class ReviewsService {
-  private reviews: Review[] = [];
+  constructor(private readonly prisma: PrismaService) {}
 
-  createReview(review: Review): Review {
-    const newReview = {
-      ...review,
-      id: (this.reviews.length + 1).toString(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    this.reviews.push(newReview);
+  async createReview(review: Review): Promise<Review> {
+    const newReview = await this.prisma.review.create({
+      data: {
+        ...review,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
     return newReview;
   }
 
-  calculateRating(productId: string): number {
-    const productReviews = this.reviews.filter(
-      (review) => review.productId === productId,
-    );
+  async calculateRating(productId: string): Promise<number> {
+    const productReviews = await this.prisma.review.findMany({
+      where: { productId },
+    });
     const totalRating = productReviews.reduce(
       (sum, review) => sum + review.rating,
       0,
